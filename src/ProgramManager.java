@@ -290,6 +290,32 @@ public class ProgramManager {
                 )
         ));
 
+        // Invalid type program
+        examples.add(new Example(
+                "Invalid type program",
+                makeCompound(
+                        new VariableDeclarationStatement(new IntType(), "v"),
+                        new VariableDeclarationStatement(new RefType(new IntType()), "a"),
+                        new AssignmentStatement("v", new ValueExpression(new BoolValue(false))),
+                        new HeapAllocationStatement("a", new ValueExpression(new IntValue(22))),
+                        new ForkStatement(
+                                makeCompound(
+                                        new HeapWriteStatement("a", new ValueExpression(new IntValue(30))),
+                                        new AssignmentStatement("v", new ValueExpression(new IntValue(32))),
+                                        new PrintStatement(new VariableExpression("v")),
+                                        new PrintStatement(
+                                                new HeapReadingExpression(
+                                                        new VariableExpression("a")
+                                                )
+                                        )
+                                )
+                        ),
+                        new PrintStatement(new VariableExpression("v")),
+                        new PrintStatement(new HeapReadingExpression(new VariableExpression("a")))
+                )
+        ));
+
+
         return examples;
     }
 }

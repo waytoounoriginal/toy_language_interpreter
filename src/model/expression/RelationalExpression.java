@@ -1,9 +1,12 @@
 package model.expression;
 
+import model.BoolType;
 import model.IntType;
+import model.Type;
 import model.exceptions.InvalidArithmeticExpception;
 import model.state.MapHeap;
 import model.state.SymbolTable;
+import model.state.structures.m_HashMap;
 import model.value.BoolValue;
 import model.value.IntValue;
 import model.value.Value;
@@ -55,6 +58,21 @@ public class RelationalExpression implements Expression {
     @Override
     public Expression deepCopy() {
         return new RelationalExpression(exp1.deepCopy(), exp2.deepCopy(), operator);
+    }
+
+    @Override
+    public Type typeCheck(m_HashMap<String, Type> typeEnv) {
+        Type type1, type2;
+        type1 = exp1.typeCheck(typeEnv);
+        type2 = exp2.typeCheck(typeEnv);
+
+        if(type1 instanceof IntType) {
+            if(type2 instanceof IntType) {
+                return new BoolType();
+            }
+            throw new InvalidArithmeticExpception("Second operand is not an integer");
+        }
+        throw new InvalidArithmeticExpception("First operand is not an integer");
     }
 
     @Override

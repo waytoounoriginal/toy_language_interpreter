@@ -1,7 +1,9 @@
 package model.statement;
 
+import model.Type;
 import model.state.ExecutionStack;
 import model.state.ProgramState;
+import model.state.structures.m_HashMap;
 
 public class CompoundStatement implements Statement {
     private final Statement stmt1;
@@ -31,5 +33,12 @@ public class CompoundStatement implements Statement {
     @Override
     public Statement deepCopy() {
         return new CompoundStatement(stmt1.deepCopy(), stmt2.deepCopy());
+    }
+
+    @Override
+    public m_HashMap<String, Type> typeCheck(m_HashMap<String, Type> typeEnv) {
+        m_HashMap<String, Type> typeEnv1 = stmt1.typeCheck(typeEnv);
+        m_HashMap<String, Type> typeEnv2 = stmt2.typeCheck(typeEnv1);
+        return typeEnv2;
     }
 }

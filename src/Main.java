@@ -1,4 +1,5 @@
 import controller.Controller;
+import model.exceptions.ToyException;
 import model.state.*;
 import model.statement.Statement;
 import repository.MultithreadedRepository;
@@ -13,6 +14,10 @@ import java.util.List;
 public class Main {
 
     private static Controller createController(String programName, Statement programRoot) {
+        // Call the type checker
+        programRoot.typeCheck(new MyHashMap<>());
+
+
         ListExecutionStack exeStack = new ListExecutionStack();
         MapSymbolTable symTable = new MapSymbolTable();
         ListOut out = new ListOut();
@@ -38,8 +43,12 @@ public class Main {
             ProgramManager.Example example = examples.get(i);
             String key = String.valueOf(i + 1);
 
-            Controller controller = createController(examples.get(i).getDescription() ,example.getRoot());
-            menu.addCommand(new RunExample(key, example.getDescription(), controller));
+            try {
+                Controller controller = createController(examples.get(i).getDescription() ,example.getRoot());
+                menu.addCommand(new RunExample(key, example.getDescription(), controller));
+            } catch(ToyException e) {
+                System.out.println("Creating the program " + example.getDescription() + " failed:" + e);
+            }
         }
 
         menu.show();

@@ -1,9 +1,14 @@
 package model.statement;
 
+import model.IntType;
+import model.StringType;
+import model.Type;
+import model.exceptions.InvalidArithmeticExpception;
 import model.exceptions.InvalidValueException;
 import model.exceptions.VariableNotDeclaredException;
 import model.expression.Expression;
 import model.state.ProgramState;
+import model.state.structures.m_HashMap;
 import model.value.IntValue;
 import model.value.StringValue;
 
@@ -45,5 +50,19 @@ public record ReadFileStatement(Expression exp, String varName) implements State
     @Override
     public Statement deepCopy() {
         return null;
+    }
+
+    @Override
+    public m_HashMap<String, Type> typeCheck(m_HashMap<String, Type> typeEnv) {
+        Type expType = exp.typeCheck(typeEnv);
+        if(expType instanceof StringType) {
+            if(typeEnv.getValue(varName) instanceof IntType) {
+                return typeEnv;
+            }
+
+            throw new InvalidValueException("READ FILE: Variable not of type integer");
+        }
+
+        throw new InvalidArithmeticExpception("FILE READ statement: RHS not a string");
     }
 }

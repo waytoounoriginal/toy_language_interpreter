@@ -1,12 +1,15 @@
 package model.statement;
 
 import model.RefType;
+import model.Type;
 import model.exceptions.HeapException;
+import model.exceptions.InvalidArithmeticExpception;
 import model.exceptions.VariableNotDeclaredException;
 import model.expression.Expression;
 import model.state.MapHeap;
 import model.state.ProgramState;
 import model.state.SymbolTable;
+import model.state.structures.m_HashMap;
 import model.value.RefValue;
 import model.value.Value;
 
@@ -45,6 +48,17 @@ public record HeapAllocationStatement(String variableName, Expression expression
         return new HeapAllocationStatement(
                 variableName, expression.deepCopy()
         );
+    }
+
+    @Override
+    public m_HashMap<String, Type> typeCheck(m_HashMap<String, Type> typeEnv) {
+        Type typeVar = typeEnv.getValue(variableName);
+        Type typeExpr = expression.typeCheck(typeEnv);
+        if(typeVar.equals(new RefType(typeExpr))) {
+            return typeEnv;
+        }
+
+        throw new InvalidArithmeticExpception("NEW statement: THS and LHS have different types");
     }
 
     @Override

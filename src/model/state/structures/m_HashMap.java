@@ -12,4 +12,6 @@ public interface m_HashMap<K, V> {
     Map<K, V> getContent();
 
     void removeKey(K key);
+
+    m_HashMap<K, V> deepCopy();
 }

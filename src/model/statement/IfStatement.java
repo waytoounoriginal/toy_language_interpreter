@@ -1,12 +1,15 @@
 package model.statement;
 
+import model.BoolType;
 import model.Type;
+import model.exceptions.InvalidArithmeticExpception;
 import model.exceptions.InvalidValueException;
 import model.exceptions.ToyException;
 import model.expression.Expression;
 import model.state.ExecutionStack;
 import model.state.ProgramState;
 import model.state.SymbolTable;
+import model.state.structures.m_HashMap;
 import model.value.BoolValue;
 import model.value.IntValue;
 import model.value.Value;
@@ -41,5 +44,18 @@ public record IfStatement(Expression conditional, Statement ifStmt, Statement el
     @Override
     public Statement deepCopy() {
         return new IfStatement(conditional.deepCopy(), ifStmt.deepCopy(), elseStmt.deepCopy());
+    }
+
+    @Override
+    public m_HashMap<String, Type> typeCheck(m_HashMap<String, Type> typeEnv) {
+        Type typeExp = conditional.typeCheck(typeEnv);
+
+        if(typeExp instanceof BoolType) {
+            ifStmt.typeCheck(typeEnv.deepCopy());
+            elseStmt.typeCheck(typeEnv.deepCopy());
+            return typeEnv;
+        }
+
+        throw new InvalidArithmeticExpception("The condition of IF has not the type bool");
     }
 }

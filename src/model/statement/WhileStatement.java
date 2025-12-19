@@ -1,8 +1,12 @@
 package model.statement;
 
+import model.BoolType;
+import model.Type;
+import model.exceptions.InvalidArithmeticExpception;
 import model.exceptions.InvalidValueException;
 import model.expression.Expression;
 import model.state.ProgramState;
+import model.state.structures.m_HashMap;
 import model.value.BoolValue;
 import model.value.Value;
 
@@ -28,6 +32,18 @@ public record WhileStatement(Expression expr, Statement statement) implements St
     @Override
     public Statement deepCopy() {
         return new WhileStatement(expr.deepCopy(), statement.deepCopy());
+    }
+
+    @Override
+    public m_HashMap<String, Type> typeCheck(m_HashMap<String, Type> typeEnv) {
+        Type typeExp = expr.typeCheck(typeEnv);
+
+        if(typeExp instanceof BoolType) {
+            statement.typeCheck(typeEnv.deepCopy());
+            return typeEnv;
+        }
+
+        throw new InvalidArithmeticExpception("The condition of WHILE has not the type bool");
     }
 
     @Override

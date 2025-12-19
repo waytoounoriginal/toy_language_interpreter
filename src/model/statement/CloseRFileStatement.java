@@ -1,8 +1,12 @@
 package model.statement;
 
+import model.StringType;
+import model.Type;
+import model.exceptions.InvalidArithmeticExpception;
 import model.exceptions.InvalidValueException;
 import model.expression.Expression;
 import model.state.ProgramState;
+import model.state.structures.m_HashMap;
 import model.value.StringValue;
 
 public record CloseRFileStatement(Expression exp) implements Statement {
@@ -26,5 +30,15 @@ public record CloseRFileStatement(Expression exp) implements Statement {
     @Override
     public Statement deepCopy() {
         return new CloseRFileStatement(exp.deepCopy());
+    }
+
+    @Override
+    public m_HashMap<String, Type> typeCheck(m_HashMap<String, Type> typeEnv) {
+        Type expType = exp.typeCheck(typeEnv);
+        if(expType instanceof StringType) {
+            return typeEnv;
+        }
+
+        throw new InvalidArithmeticExpception("FILE CLOSE statement: RHS not a string");
     }
 }

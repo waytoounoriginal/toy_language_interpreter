@@ -15,6 +15,7 @@ public class RunExample extends Command {
 
     @Override
     public void execute() {
+
         try {
             System.out.println("Running " + getDescription() + "...");
             controller.allSteps();

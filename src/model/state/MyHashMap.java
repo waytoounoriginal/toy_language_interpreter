@@ -42,4 +42,15 @@ public class MyHashMap<K, V> implements m_HashMap<K, V> {
     public void removeKey(K key) {
         innerMap.remove(key);
     }
+
+    @Override
+    public MyHashMap<K, V> deepCopy() {
+        MyHashMap<K, V> newTable = new MyHashMap<K, V>();
+
+        innerMap.forEach((k, v) -> {
+            newTable.put(k, v);
+        });
+
+        return newTable;
+    }
 }
